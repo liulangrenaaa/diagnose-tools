@@ -9,8 +9,8 @@
  *
  */
 
+#include <linux/version.h>
 #include <linux/proc_fs.h>
-
 #include "pub/trace_buffer.h"
 
 struct diag_trace_file;
@@ -22,7 +22,11 @@ typedef ssize_t (*diag_trace_file_write_cb)(struct diag_trace_file *trace_file,
 		loff_t *offs);
 struct diag_trace_file {
 	struct diag_trace_buffer trace_buffer;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 6, 0)
 	struct file_operations fops;
+#else
+	struct proc_ops fops;
+#endif
 	struct proc_dir_entry *pe;
 	diag_trace_file_prepare_read prepare_read;
 	diag_trace_file_write_cb write;

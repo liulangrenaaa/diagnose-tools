@@ -393,19 +393,31 @@ int init_diag_trace_file(struct diag_trace_file *file,
 	if (ret)
 		goto out_buffer;
 
+	file->prepare_read = prepare_read;
+	file->write = write;
+	file->buf_size = buf_size;
+	strncpy(file->file_name, filename, 255);
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 6, 0)
 	file->fops.open = trace_file_open;
 	file->fops.read = trace_file_read;
 	file->fops.write = trace_file_write;
 	file->fops.llseek = seq_lseek;
 	file->fops.release = __single_release;
-	file->prepare_read = prepare_read;
-	file->write = write;
-	file->buf_size = buf_size;
-	strncpy(file->file_name, filename, 255);
 	pe = proc_create_data(filename,
 			S_IFREG | 0666,
 			NULL,
 			&file->fops, file);
+#else
+	file->fops.proc_open = trace_file_open;
+	file->fops.proc_read = trace_file_read;
+	file->fops.proc_write = trace_file_write;
+	file->fops.proc_lseek = seq_lseek;
+	file->fops.proc_release = __single_release;
+	pe = proc_create_data(filename,
+			S_IFREG | 0666,
+			NULL,
+			&file->fops, file);
+#endif
 	ret = -ENOMEM;
 	if (!pe)
 		goto err_proc;
