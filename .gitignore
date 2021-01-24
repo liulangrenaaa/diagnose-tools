@@ -8,7 +8,9 @@
 *.symvers
 *.order
 *.o.ur-safe
+*.o.d
 /SOURCE/module/.tmp_versions
 /rpmbuild/RPMS
 /rpmbuild/diagnose-tools.spec
 /SOURCE/diagnose-tools/diagnose-tools
+.vscode

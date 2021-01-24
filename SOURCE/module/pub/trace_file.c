@@ -79,7 +79,7 @@ static int trace_file_show(struct seq_file *m, void *v)
 
 	seq_write(m, trace_file->trace_buffer.product.data,
 		trace_file->trace_buffer.product.len);
-	
+
 	return 0;
 }
 
@@ -112,7 +112,9 @@ static int traverse(struct diag_trace_file *trace_file, struct seq_file *m, loff
 	int error = 0;
 	void *p;
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 7, 0)
 	m->version = 0;
+#endif
 	index = 0;
 	m->count = m->from = 0;
 	if (!offset) {
@@ -188,7 +190,9 @@ ssize_t __seq_read(struct diag_trace_file *trace_file,
 	 * It is convenient to have it as  part of structure to avoid the
 	 * need of passing another argument to all the seq_file methods.
 	 */
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 7, 0)
 	m->version = file->f_version;
+#endif
 
 	/* Don't assume *ppos is where we left it */
 	if (unlikely(*ppos != m->read_pos)) {
@@ -197,7 +201,9 @@ ssize_t __seq_read(struct diag_trace_file *trace_file,
 		if (err) {
 			/* With prejudice... */
 			m->read_pos = 0;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 7, 0)
 			m->version = 0;
+#endif
 			m->index = 0;
 			m->count = 0;
 			goto Done;
@@ -258,7 +264,9 @@ ssize_t __seq_read(struct diag_trace_file *trace_file,
 		m->buf = __seq_buf_alloc(m->size <<= 1);
 		if (!m->buf)
 			goto Enomem;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 7, 0)
 		m->version = 0;
+#endif
 		pos = m->index;
 		p = m->op->start(m, &pos);
 	}
@@ -302,7 +310,9 @@ Done:
 		*ppos += copied;
 		m->read_pos += copied;
 	}
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 7, 0)
 	file->f_version = m->version;
+#endif
 	mutex_unlock(&m->lock);
 	return copied;
 Enomem:

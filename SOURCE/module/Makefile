@@ -226,7 +226,7 @@ else
 	    strip --strip-debug diagnose.ko
 
     clean:
-	    rm -rf *.o *.mod.c *.mod.o *.ko* Module.symvers modules.order .*.cmd
+	    rm -rf *.o *.mod.c *.mod.o *.ko* Module.symvers modules.order .*.cmd .*.o.d
 	    rm -rf net/*.o net/*.mod.c net/*.mod.o net/*.ko* net/Module.symvers net/modules.order net/.*.cmd
 	    rm -rf io/*.o io/*.mod.c io/*.mod.o io/*.ko* io/Module.symvers io/modules.order io/.*.cmd
 	    rm -rf kernel/*.o kernel/*.mod.c kernel/*.mod.o kernel/*.ko* kernel/Module.symvers kernel/modules.order kernel/.*.cmd
